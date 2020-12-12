@@ -1,6 +1,8 @@
 package com.lambdaschool.javazoos.models;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "animals")
@@ -11,11 +13,15 @@ public class Animal {
 
     private String animaltype;
 
+    @ManyToMany(mappedBy = "animals")
+    Set<Zoo> zoos = new HashSet<>();
+
     public Animal() {
     }
 
-    public Animal(String animaltype) {
+    public Animal(String animaltype, Set<Zoo> zoos) {
         this.animaltype = animaltype;
+        this.zoos = zoos;
     }
 
     public long getAnimalid() {
@@ -34,11 +40,20 @@ public class Animal {
         this.animaltype = animaltype;
     }
 
+    public Set<Zoo> getZoos() {
+        return zoos;
+    }
+
+    public void setZoos(Set<Zoo> zoos) {
+        this.zoos = zoos;
+    }
+
     @Override
     public String toString() {
         return "Animal{" +
                 "animalid=" + animalid +
                 ", animaltype='" + animaltype + '\'' +
+                ", zoos=" + zoos +
                 '}';
     }
 }
