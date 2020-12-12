@@ -1,12 +1,10 @@
 package com.lambdaschool.javazoos.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.h2.api.DatabaseEventListener;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "zoos")
@@ -17,24 +15,29 @@ public class Zoo extends Auditable {
 
     private String zooname;
 
+    private String incomingzoo;
+
     @OneToMany(mappedBy = "zoo",
                cascade = CascadeType.ALL,
                orphanRemoval = true)
     @JsonIgnoreProperties(value = "zoo", allowSetters = true)
     private List<Telephone> telephones = new ArrayList<>();
 
-    @ManyToMany()
-    @JoinTable(name = "zooanimals",
-               joinColumns = @JoinColumn(name = "zooid"),
-               inverseJoinColumns = @JoinColumn(name = "animalid"))
-    Set<Animal> animals = new HashSet<>();
+    @OneToMany(mappedBy = "zoo",
+               cascade = CascadeType.ALL)
+    @JsonIgnoreProperties(value = "zoo", allowSetters = true)
+    private Set<ZooAnimals> animals = new HashSet<>();
 
     public Zoo() {
     }
 
-    public Zoo(String zooname, List<Telephone> telephones) {
+    public Zoo(long zooid, String zooname) {
+        this.zooid = zooid;
         this.zooname = zooname;
-        this.telephones = telephones;
+//        this.createdby = created_by;
+//        this.createddate = created_date;
+//        this.lastmodifiedby = last_modified_by;
+//        this.lastmodifieddate = last_modified_date;
     }
 
     public long getZooid() {
@@ -53,6 +56,14 @@ public class Zoo extends Auditable {
         this.zooname = zooname;
     }
 
+    public Set<ZooAnimals> getAnimals() {
+        return animals;
+    }
+
+    public void setAnimals(Set<ZooAnimals> animals) {
+        this.animals = animals;
+    }
+
     public List<Telephone> getTelephones() {
         return telephones;
     }
@@ -67,6 +78,7 @@ public class Zoo extends Auditable {
                 "zooid=" + zooid +
                 ", zooname='" + zooname + '\'' +
                 ", telephones=" + telephones +
+                ", animals=" + animals +
                 '}';
     }
 }

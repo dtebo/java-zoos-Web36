@@ -1,5 +1,7 @@
 package com.lambdaschool.javazoos.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,13 +15,15 @@ public class Animal extends Auditable {
 
     private String animaltype;
 
-    @ManyToMany(mappedBy = "animals")
-    Set<Zoo> zoos = new HashSet<>();
+    @OneToMany(mappedBy = "animal",
+               cascade = CascadeType.ALL)
+    @JsonIgnoreProperties(value = "animal", allowSetters = true)
+    private Set<ZooAnimals> zoos = new HashSet<>();
 
     public Animal() {
     }
 
-    public Animal(String animaltype, Set<Zoo> zoos) {
+    public Animal(String animaltype, Set<ZooAnimals> zoos) {
         this.animaltype = animaltype;
         this.zoos = zoos;
     }
@@ -40,11 +44,11 @@ public class Animal extends Auditable {
         this.animaltype = animaltype;
     }
 
-    public Set<Zoo> getZoos() {
+    public Set<ZooAnimals> getZoos() {
         return zoos;
     }
 
-    public void setZoos(Set<Zoo> zoos) {
+    public void setZoos(Set<ZooAnimals> zoos) {
         this.zoos = zoos;
     }
 
